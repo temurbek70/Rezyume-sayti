@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Rezyume - Mukammal rezyume yarating</title>
+
+    <style>
+        /* Umumiy stil */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --white: #fff;
+            --dark-gray: #777;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        .language-selector select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: none;
+            background-color: var(--white);
+            color: var(--text-color);
+        }
+
+        /* Asosiy kontent */
+        main {
+            padding: 30px 0;
+        }
+
+        .intro-section {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .intro-section h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        /* Tugmalar */
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-primary:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Forma */
+        #resume-form {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        #resume-form h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="tel"],
+        .form-group select,
+        .form-group textarea,
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .radio-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Rezyume ko'rinishi uchun stillar (PDF ga o'tishda ishlatiladi) */
+        #resume-preview {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            max-width: 800px; /* PDFga optimal kenglik */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .resume-content {
+            padding: 20px;
+            border: 1px solid #eee;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .resume-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .resume-photo {
+            width: 100px; /* 3x4 formatga mos taxminiy kenglik */
+            height: 133px; /* 3x4 formatga mos taxminiy balandlik (100 * 4/3 = 133.33) */
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .resume-header h2 {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .resume-header p {
+            font-size: 16px;
+            color: var(--dark-gray);
+            margin: 5px 0 0;
+        }
+
+        .resume-section {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .resume-section:last-child {
+            border-bottom: none;
+        }
+
+        .resume-section h3 {
+            font-size: 18px;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        /* Mobil moslashuvchanlik */
+        @media (max-width: 768px) {
+            .intro-section {
+                padding: 30px 0;
+            }
+
+            .intro-section h2 {
+                font-size: 24px;
+            }
+
+            .resume-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .resume-photo {
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Perfect Rezyume</h1>
+            <div class="language-selector">
+                <select id="language-select">
+                    <option value="uz">O'zbekcha</option>
+                    <option value="en">English</option>
+                    <option value="ru">Русский</option>
+                    <option value="kz">Қазақша</option>
+                    <option value="tj">Тоҷикӣ</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="ka">Qaraqalpaqsha</option>
+                    <option value="tk">Türkmençe</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2 id="welcome-text">Mukammal rezyume yarating - bepul!</h2>
+            <button id="start-btn" class="btn-primary">Yangi rezyume yaratish</button>
+        </section>
+
+        <section id="resume-form" class="hidden">
+            <h2 id="form-title">Rezyume ma'lumotlari</h2>
+            <form id="resume-data-form">
+                <div class="form-group">
+                    <label for="firstName" id="first-name-label">Ism</label>
+                    <input type="text" id="firstName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName" id="last-name-label">Familiya</label>
+                    <input type="text" id="lastName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="age" id="age-label">Yosh</label>
+                    <input type="number" id="age" min="16" max="99" required>
+                </div>
+
+                <div class="form-group">
+                    <label id="education-label">Ma'lumot darajasi</label>
+                    <select id="education" required>
+                        <option value="" selected disabled id="select-education">Tanlang</option>
+                        <option value="high" id="high-edu">Oliy ma'lumot</option>
+                        <option value="secondary" id="secondary-edu">O'rta maxsus</option>
+                        <option value="school" id="school-edu">O'rta ma'lumot</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label id="job-seeker-label">Hozirda ish qidiryapsizmi?</label>
+                    <div class="radio-group">
+                        <input type="radio" id="jobSeekerYes" name="jobSeeker" value="Ha" required>
+                        <label for="jobSeekerYes" id="yes-label">Ha</label>
+                        <input type="radio" id="jobSeekerNo" name="jobSeeker" value="Yo'q" required>
+                        <label for="jobSeekerNo" id="no-label">Yo'q</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" id="phone-label">Telefon raqam</label>
+                    <input type="tel" id="phone" required pattern="[0-9]{9,}" title="Iltimos, kamida 9 ta raqam kiriting">
+                </div>
+
+                <div class="form-group">
+                    <label for="experience" id="experience-label">Ish tajribasi (Avval ishlagan joylaringiz va muddatlari)</label>
+                    <textarea id="experience" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="interests" id="interests-label">Qiziqishlaringiz va ko'nikmalaringiz</label>
+                    <textarea id="interests" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label id="marital-label">Oilaviy holatingiz</label>
+                    <div class="radio-group">
+                        <input type="radio" id="marriedYes" name="maritalStatus" value="Oilali" required>
+                        <label for="marriedYes" id="married-label">Oilali</label>
+                        <input type="radio" id="marriedNo" name="maritalStatus" value="Oilasiz" required>
+                        <label for="marriedNo" id="single-label">Oilasiz</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label id="gender-label">Jinsingiz</label>
+                    <div class="radio-group">
+                        <input type="radio" id="male" name="gender" value="Erkak" required>
+                        <label for="male" id="male-label">Erkak</label>
+                        <input type="radio" id="female" name="gender" value="Ayol" required>
+                        <label for="female" id="female-label">Ayol</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="photo" id="photo-label">Rasm yuklash (3x4 format, max 10MB)</label>
+                    <input type="file" id="photo" accept="image/*">
+                    <small id="photo-help">Rasm hajmi 10MB dan oshmasligi kerak</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="generate-pdf-btn" class="btn-primary" disabled>Rezyume yaratish (PDF)</button>
+                </div>
+            </form>
+        </section>
+
+        <div id="resume-preview" class="hidden">
+            <div class="resume-content">
+                <div class="resume-header">
+                    <img id="preview-photo" src="" alt="Foydalanuvchi rasmi" class="resume-photo hidden">
+                    <div>
+                        <h2 id="preview-name"></h2>
+                        <p id="preview-age"></p>
+                    </div>
+                </div>
+                <div class="resume-section">
+                    <h3>Kontakt ma'lumotlari</h3>
+                    <p>Telefon: <span id="preview-phone"></span></p>
+                </div>
+                <div class="resume-section">
+                    <h3>Ma'lumot darajasi</h3>
+                    <p id="preview-education"></p>
+                </div>
+                <div class="resume-section">
+                    <h3>Ish qidiryapsizmi?</h3>
+                    <p id="preview-job-seeker"></p>
+                </div>
+                <div class="resume-section">
+                    <h3>Ish tajribasi</h3>
+                    <p id="preview-experience"></p>
+                </div>
+                <div class="resume-section">
+                    <h3>Qiziqishlar va ko'nikmalar</h3>
+                    <p id="preview-interests"></p>
+                </div>
+                <div class="resume-section">
+                    <h3>Oilaviy holati</h3>
+                    <p id="preview-marital"></p>
+                </div>
+                <div class="resume-section">
+                    <h3>Jinsi</h3>
+                    <p id="preview-gender"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p id="footer-text">© 2025 Perfect Rezyume. Barcha huquqlar himoyalangan.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        // Til matnlari
+        const translations = {
+            uz: {
+                welcome: "Mukammal rezyume yarating - bepul!",
+                startBtn: "Yangi rezyume yaratish",
+                formTitle: "Rezyume ma'lumotlari",
+                firstName: "Ism",
+                lastName: "Familiya",
+                age: "Yosh",
+                education: "Ma'lumot darajasi",
+                selectEducation: "Tanlang",
+                highEdu: "Oliy ma'lumot",
+                secondaryEdu: "O'rta maxsus",
+                schoolEdu: "O'rta ma'lumot",
+                jobSeeker: "Hozirda ish qidiryapsizmi?",
+                yes: "Ha",
+                no: "Yo'q",
+                phone: "Telefon raqam",
+                experience: "Ish tajribasi (Avval ishlagan joylaringiz va muddatlari)",
+                interests: "Qiziqishlaringiz va ko'nikmalaringiz",
+                marital: "Oilaviy holatingiz",
+                married: "Oilali",
+                single: "Oilasiz",
+                gender: "Jinsingiz",
+                male: "Erkak",
+                female: "Ayol",
+                photo: "Rasm yuklash (3x4 format, max 10MB)",
+                photoHelp: "Rasm hajmi 10MB dan oshmasligi kerak",
+                generatePdfBtn: "Rezyume yaratish (PDF)",
+                footer: "© 2025 Perfect Rezyume. Barcha huquqlar himoyalangan.",
+                alertPhotoSize: "Rasm hajmi 10MB dan oshmasligi kerak!",
+                alertPdfGenerating: "Rezyume PDF formatida yaratilmoqda...",
+                alertPdfSuccess: "Rezyume PDF formatida muvaffaqiyatli yuklab olindi!"
+            },
+            en: {
+                welcome: "Create a perfect resume - for free!",
+                startBtn: "Create new resume",
+                formTitle: "Resume Information",
+                firstName: "First Name",
+                lastName: "Last Name",
+                age: "Age",
+                education: "Education Level",
+                selectEducation: "Select",
+                highEdu: "Higher Education",
+                secondaryEdu: "Secondary Special",
+                schoolEdu: "Secondary Education",
+                jobSeeker: "Are you currently looking for a job?",
+                yes: "Yes",
+                no: "No",
+                phone: "Phone Number",
+                experience: "Work Experience (Previous jobs and durations)",
+                interests: "Your Interests and Skills",
+                marital: "Marital Status",
+                married: "Married",
+                single: "Single",
+                gender: "Gender",
+                male: "Male",
+                female: "Female",
+                photo: "Upload Photo (3x4 format, max 10MB)",
+                photoHelp: "Photo size should not exceed 10MB",
+                generatePdfBtn: "Generate Resume (PDF)",
+                footer: "© 2025 Perfect Resume. All rights reserved.",
+                alertPhotoSize: "Photo size should not exceed 10MB!",
+                alertPdfGenerating: "Generating resume in PDF format...",
+                alertPdfSuccess: "Resume successfully downloaded in PDF format!"
+            },
+            ru: {
+                welcome: "Создайте идеальное резюме - бесплатно!",
+                startBtn: "Создать новое резюме",
+                formTitle: "Информация для резюме",
+                firstName: "Имя",
+                lastName: "Фамилия",
+                age: "Возраст",
+                education: "Уровень образования",
+                selectEducation: "Выберите",
+                highEdu: "Высшее образование",
+                secondaryEdu: "Среднее специальное",
+                schoolEdu: "Среднее образование",
+                jobSeeker: "Вы сейчас ищете работу?",
+                yes: "Да",
+                no: "Нет",
+                phone: "Номер телефона",
+                experience: "Опыт работы (Предыдущие места работы и сроки)",
+                interests: "Ваши интересы и навыки",
+                marital: "Семейное положение",
+                married: "Женат/Замужем",
+                single: "Холост/Не замужем",
+                gender: "Пол",
+                male: "Мужской",
+                female: "Женский",
+                photo: "Загрузить фото (3x4 формат, макс. 10MB)",
+                photoHelp: "Размер фотографии не должен превышать 10 МБ",
+                generatePdfBtn: "Создать резюме (PDF)",
+                footer: "© 2025 Perfect Resume. Все права защищены.",
+                alertPhotoSize: "Размер фотографии не должен превышать 10 МБ!",
+                alertPdfGenerating: "Генерация резюме в формате PDF...",
+                alertPdfSuccess: "Резюме успешно загружено в формате PDF!"
+            },
+            kz: {
+                welcome: "Тамаша резюме жасаңыз - тегін!",
+                startBtn: "Жаңа резюме жасау",
+                formTitle: "Резюме ақпараты",
+                firstName: "Аты",
+                lastName: "Тегі",
+                age: "Жасы",
+                education: "Білім деңгейі",
+                selectEducation: "Таңдаңыз",
+                highEdu: "Жоғары білім",
+                secondaryEdu: "Арнайы орта",
+                schoolEdu: "Орта білім",
+                jobSeeker: "Қазір жұмыс іздейсіз бе?",
+                yes: "Иә",
+                no: "Жоқ",
+                phone: "Телефон нөмірі",
+                experience: "Жұмыс тәжірибесі (Алдыңғы жұмыс орындары мен мерзімдері)",
+                interests: "Сіздің қызығушылықтарыңыз және дағдыларыңыз",
+                marital: "Отбасылық жағдай",
+                married: "Үйленген",
+                single: "Үйленбеген",
+                gender: "Жынысы",
+                male: "Ер",
+                female: "Әйел",
+                photo: "Фото жүктеу (3x4 формат, макс. 10MB)",
+                photoHelp: "Фотосуреттің өлшемі 10 МБ-тан аспауы керек",
+                generatePdfBtn: "Резюме жасау (PDF)",
+                footer: "© 2025 Perfect Resume. Барлық құқықтар қорғалған.",
+                alertPhotoSize: "Фотосуреттің өлшемі 10 МБ-тан аспауы керек!",
+                alertPdfGenerating: "Резюме PDF форматында жасалуда...",
+                alertPdfSuccess: "Резюме PDF форматында сәтті жүктелді!"
+            },
+            tj: {
+                welcome: "Резюмеи комилро ройгон созед!",
+                startBtn: "Эҷоди резюмеи нав",
+                formTitle: "Маълумоти резюме",
+                firstName: "Ном",
+                lastName: "Насаб",
+                age: "Синну сол",
+                education: "Сатҳи таҳсилот",
+                selectEducation: "Интихоб кунед",
+                highEdu: "Таҳсилоти олӣ",
+                secondaryEdu: "Таҳсилоти миёнаи махсус",
+                schoolEdu: "Таҳсилоти миёна",
+                jobSeeker: "Оё шумо ҳоло кор меҷӯед?",
+                yes: "Бале",
+                no: "Не",
+                phone: "Рақами телефон",
+                experience: "Таҷрибаи корӣ (Ҷойҳои корӣ ва мӯҳлатҳои қаблӣ)",
+                interests: "Шавқу ҳавасҳо ва малакаҳои шумо",
+                marital: "Вазъи оилавӣ",
+                married: "Оиладор",
+                single: "Муҷаррад",
+                gender: "Ҷинс",
+                male: "Мард",
+                female: "Занона",
+                photo: "Боргузории акс (формати 3x4, макс. 10MB)",
+                photoHelp: "Андозаи акс набояд аз 10MB зиёд бошад",
+                generatePdfBtn: "Эҷоди резюме (PDF)",
+                footer: "© 2025 Perfect Rezyume. Ҳамаи ҳуқуқҳо ҳифз шудаанд.",
+                alertPhotoSize: "Андозаи акс набояд аз 10MB зиёд бошад!",
+                alertPdfGenerating: "Резюме дар формати PDF эҷод мешавад...",
+                alertPdfSuccess: "Резюме дар формати PDF бомуваффақият боргирӣ шуд!"
+            },
+            tr: {
+                welcome: "Mükemmel bir özgeçmiş oluşturun - ücretsiz!",
+                startBtn: "Yeni özgeçmiş oluştur",
+                formTitle: "Özgeçmiş bilgileri",
+                firstName: "Ad",
+                lastName: "Soyad",
+                age: "Yaş",
+                education: "Eğitim seviyesi",
+                selectEducation: "Seçiniz",
+                highEdu: "Yüksek öğrenim",
+                secondaryEdu: "Ortaöğretim",
+                schoolEdu: "İlköğretim",
+                jobSeeker: "Şu anda iş mi arıyorsunuz?",
+                yes: "Evet",
+                no: "Hayır",
+                phone: "Telefon numarası",
+                experience: "İş deneyimi (Önceki işler ve süreleri)",
+                interests: "İlgi alanlarınız ve becerileriniz",
+                marital: "Medeni durumunuz",
+                married: "Evli",
+                single: "Bekar",
+                gender: "Cinsiyetiniz",
+                male: "Erkek",
+                female: "Kadın",
+                photo: "Fotoğraf yükle (3x4 format, max 10MB)",
+                photoHelp: "Fotoğraf boyutu 10MB'ı geçmemelidir",
+                generatePdfBtn: "Özgeçmiş oluştur (PDF)",
+                footer: "© 2025 Perfect Rezyume. Tüm hakları saklıdır.",
+                alertPhotoSize: "Fotoğraf boyutu 10MB'ı geçmemelidir!",
+                alertPdfGenerating: "Özgeçmiş PDF formatında oluşturuluyor...",
+                alertPdfSuccess: "Özgeçmiş PDF formatında başarıyla indirildi!"
+            },
+            ka: {
+                welcome: "Kámil rezyume jaratıń - biypul!",
+                startBtn: "Jańa rezyume jaratıw",
+                formTitle: "Rezyume maǵlıwmatları",
+                firstName: "Atı",
+                lastName: "Familiyası",
+                age: "Jası",
+                education: "Maǵlıwmat dárejesi",
+                selectEducation: "Tańlań",
+                highEdu: "Joqarı maǵlıwmat",
+                secondaryEdu: "Orta arnawlı",
+                schoolEdu: "Orta maǵlıwmat",
+                jobSeeker: "Házirde jumıs izlep atırmısız?",
+                yes: "Ha",
+                no: "Joq",
+                phone: "Telefon nomeri",
+                experience: "Jumıs tájiriybesi (Aldın islegen jerlerińiz hám múddetleri)",
+                interests: "Qızıǵıwshılıqlarıńız hám kónlikpelerińiz",
+                marital: "Shańaraq jaǵdayıńız",
+                married: "Shańaraqlı",
+                single: "Shańaraqsız",
+                gender: "Jısıńız",
+                male: "Erkek",
+                female: "Hayal",
+                photo: "Súwret júklew (3x4 format, maks. 10MB)",
+                photoHelp: "Súwret kólemi 10MB tan asmaslıǵı kerek",
+                generatePdfBtn: "Rezyume jaratıw (PDF)",
+                footer: "© 2025 Perfect Rezyume. Barcha huquqlar himoyalangan.",
+                alertPhotoSize: "Súwret kólemi 10MB tan asmaslıǵı kerek!",
+                alertPdfGenerating: "Rezyume PDF formatında jaratılmaqta...",
+                alertPdfSuccess: "Rezyume PDF formatında sáwbetli túrde júklip alındı!"
+            },
+            tk: {
+                welcome: "Kämil rezyume dörediň - mugt!",
+                startBtn: "Täze rezyume döretmek",
+                formTitle: "Rezyume maglumatlary",
+                firstName: "Ady",
+                lastName: "Familiýasy",
+                age: "Ýaşy",
+                education: "Bilim derejesi",
+                selectEducation: "Saýlaň",
+                highEdu: "Ýokary bilim",
+                secondaryEdu: "Orta ýörite",
+                schoolEdu: "Orta bilim",
+                jobSeeker: "Häzir iş gözleýärsiňizmi?",
+                yes: "Hawa",
+                no: "Ýok",
+                phone: "Telefon belgisi",
+                experience: "Iş tejribesi (Öňki iş ýerleriňiz we möhletleri)",
+                interests: "Gyzyklanmalaryňyz we endikleriňiz",
+                marital: "Maşgala ýagdaýyňyz",
+                married: "Öýli/Maşgalaly",
+                single: "Öýlenmedik/Durmuşa çykmadyk",
+                gender: "Jynsyňyz",
+                male: "Erkek",
+                female: "Aýal",
+                photo: "Surat ýükläň (3x4 format, iň köpi 10MB)",
+                photoHelp: "Surat ölçegi 10MB-den geçmeli däl",
+                generatePdfBtn: "Rezyume döretmek (PDF)",
+                footer: "© 2025 Perfect Rezyume. Ähli hukuklar goralan.",
+                alertPhotoSize: "Surat ölçegi 10MB-den geçmeli däl!",
+                alertPdfGenerating: "Rezyume PDF formatynda döredilýär...",
+                alertPdfSuccess: "Rezyume PDF formatynda üstünlikli ýüklendi!"
+            }
+        };
+
+        // Joriy til
+        let currentLanguage = 'uz';
+
+        // DOM elementlari
+        const introSection = document.querySelector('.intro-section');
+        const languageSelect = document.getElementById('language-select');
+        const welcomeText = document.getElementById('welcome-text');
+        const startBtn = document.getElementById('start-btn');
+        const resumeForm = document.getElementById('resume-form');
+        const formTitle = document.getElementById('form-title');
+
+        // Forma inputlari
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const ageInput = document.getElementById('age');
+        const educationSelect = document.getElementById('education');
+        const jobSeekerYes = document.getElementById('jobSeekerYes');
+        const jobSeekerNo = document.getElementById('jobSeekerNo');
+        const phoneInput = document.getElementById('phone');
+        const experienceInput = document.getElementById('experience');
+        const interestsInput = document.getElementById('interests');
+        const marriedYes = document.getElementById('marriedYes');
+        const marriedNo = document.getElementById('marriedNo');
+        const maleGender = document.getElementById('male');
+        const femaleGender = document.getElementById('female');
+        const photoInput = document.getElementById('photo');
+
+        // Rezyume preview elementlari
+        const previewName = document.getElementById('preview-name');
+        const previewAge = document.getElementById('preview-age');
+        const previewPhoto = document.getElementById('preview-photo');
+        const previewPhone = document.getElementById('preview-phone');
+        const previewEducation = document.getElementById('preview-education');
+        const previewJobSeeker = document.getElementById('preview-job-seeker');
+        const previewExperience = document.getElementById('preview-experience');
+        const previewInterests = document.getElementById('preview-interests');
+        const previewMarital = document.getElementById('preview-marital');
+        const previewGender = document.getElementById('preview-gender');
+        const resumePreviewDiv = document.getElementById('resume-preview'); // Butun rezyume ko'rinish divi
+
+        // Tugmalar
+        const generatePdfBtn = document.getElementById('generate-pdf-btn');
+
+        // Barcha form inputlari
+        const formInputs = document.querySelectorAll('#resume-data-form input, #resume-data-form select, #resume-data-form textarea');
+
+        let photoBase64 = ''; // Yuklangan rasmni base64 formatida saqlash uchun
+
+        // Tilni yuklash funksiyasi
+        function loadLanguage(lang) {
+            currentLanguage = lang;
+            const t = translations[lang];
+
+            welcomeText.textContent = t.welcome;
+            startBtn.textContent = t.startBtn;
+            formTitle.textContent = t.formTitle;
+
+            document.getElementById('first-name-label').textContent = t.firstName;
+            document.getElementById('lastName-label').textContent = t.lastName;
+            document.getElementById('age-label').textContent = t.age;
+            document.getElementById('education-label').textContent = t.education;
+            document.getElementById('select-education').textContent = t.selectEducation;
+            document.getElementById('high-edu').textContent = t.highEdu;
+            document.getElementById('secondary-edu').textContent = t.secondaryEdu;
+            document.getElementById('school-edu').textContent = t.schoolEdu;
+            document.getElementById('job-seeker-label').textContent = t.jobSeeker;
+            document.getElementById('yes-label').textContent = t.yes;
+            document.getElementById('no-label').textContent = t.no;
+            document.getElementById('phone-label').textContent = t.phone;
+            document.getElementById('experience-label').textContent = t.experience;
+            document.getElementById('interests-label').textContent = t.interests;
+            document.getElementById('marital-label').textContent = t.marital;
+            document.getElementById('married-label').textContent = t.married;
+            document.getElementById('single-label').textContent = t.single;
+            document.getElementById('gender-label').textContent = t.gender;
+            document.getElementById('photo-label').textContent = t.photo;
+            document.getElementById('photo-help').textContent = t.photoHelp;
+            generatePdfBtn.textContent = t.generatePdfBtn;
+            document.getElementById('footer-text').textContent = t.footer;
+
+            // Pleysxolderlarni yangilash
+            firstNameInput.placeholder = t.firstName + '...';
+            lastNameInput.placeholder = t.lastName + '...';
+            phoneInput.placeholder = 'XX XXX XX XX';
+            experienceInput.placeholder = t.experience + '...';
+            interestsInput.placeholder = t.interests + '...';
+        }
+
+        // Forma to'ldirilganligini tekshirish
+        function checkFormValidity() {
+            const isFormValid = Array.from(formInputs).every(input => {
+                if (input.type === 'radio') {
+                    const radioGroupName = input.name;
+                    const radios = document.querySelectorAll(`input[name="${radioGroupName}"]`);
+                    return Array.from(radios).some(radio => radio.checked);
+                }
+                return input.value.trim() !== '';
+            }) && (photoInput.files.length > 0 || photoBase64 !== ''); // Rasm yuklangan bo'lishi shart
+
+            generatePdfBtn.disabled = !isFormValid;
+        }
+
+        // Rezyume ma'lumotlarini previewga yuklash
+        function updateResumePreview() {
+            const t = translations[currentLanguage];
+
+            const firstName = firstNameInput.value;
+            const lastName = lastNameInput.value;
+            const age = ageInput.value;
+            const education = educationSelect.options[educationSelect.selectedIndex].textContent;
+            const jobSeeker = jobSeekerYes.checked ? t.yes : (jobSeekerNo.checked ? t.no : '');
+            const phone = phoneInput.value;
+            const experience = experienceInput.value;
+            const interests = interestsInput.value;
+            const maritalStatus = marriedYes.checked ? t.married : (marriedNo.checked ? t.single : '');
+            const gender = maleGender.checked ? t.male : (femaleGender.checked ? t.female : '');
+
+            previewName.textContent = `${firstName} ${lastName}`;
+            previewAge.textContent = `${t.age}: ${age}`;
+            previewPhone.textContent = phone;
+            previewEducation.textContent = education;
+            previewJobSeeker.textContent = jobSeeker;
+            previewExperience.textContent = experience;
+            previewInterests.textContent = interests;
+            previewMarital.textContent = maritalStatus;
+            previewGender.textContent = gender;
+
+            // Rasm oldindan ko'rish va uni base64 formatida saqlash
+            const file = photoInput.files[0];
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) { // 10MB
+                    alert(t.alertPhotoSize);
+                    photoInput.value = ''; // Inputni tozalash
+                    previewPhoto.classList.add('hidden');
+                    previewPhoto.src = '';
+                    photoBase64 = '';
+                    checkFormValidity();
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewPhoto.src = e.target.result;
+                    previewPhoto.classList.remove('hidden');
+                    photoBase64 = e.target.result; // Rasmni base64 formatida saqlash
+                    checkFormValidity(); // Rasm yuklangach formani tekshirish
+                };
+                reader.readAsDataURL(file);
+            } else if (photoBase64) {
+                previewPhoto.src = photoBase64;
+                previewPhoto.classList.remove('hidden');
+                checkFormValidity();
+            } else {
+                previewPhoto.classList.add('hidden');
+                previewPhoto.src = '';
+                checkFormValidity();
+            }
+        }
+
+        // PDF yaratish funksiyasi
+        async function generatePdf() {
+            const t = translations[currentLanguage];
+            alert(t.alertPdfGenerating);
+
+            // Rezyume ko'rinishini ekranda ko'rinadigan qilish (faqat generatsiya paytida)
+            resumePreviewDiv.classList.remove('hidden');
+
+            // PDFga aylantiriladigan kontent elementi
+            const resumeContent = document.querySelector('.resume-content');
+
+            // html2canvas yordamida divni canvasga aylantirish
+            const canvas = await html2canvas(resumeContent, {
+                scale: 2, // Yuqori sifat uchun масштаб
+                useCORS: true // Agar rasmlar tashqi manbadan bo'lsa
+            });
+
+            // Canvasdan rasm URLini olish
+            const imgData = canvas.toDataURL('image/png');
+
+            // PDF obyektini yaratish
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' - portrait, 'mm' - millimetr, 'a4' - A4 format
+
+            const imgWidth = 210; // A4 kengligi (mm)
+            const pageHeight = 297; // A4 balandligi (mm)
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+            let heightLeft = imgHeight;
+
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            // PDF faylini yuklab olish
+            pdf.save('rezyume.pdf');
+
+            alert(t.alertPdfSuccess);
+
+            // PDF yaratib bo'lingach, rezyume ko'rinishini yana yashirish
+            resumePreviewDiv.classList.add('hidden');
+        }
+
+        // Event tinglovchilar
+        languageSelect.addEventListener('change', (e) => loadLanguage(e.target.value));
+        startBtn.addEventListener('click', () => {
+            introSection.classList.add('hidden');
+            resumeForm.classList.remove('hidden');
+        });
+
+        // Forma inputlaridagi o'zgarishlarni kuzatish va rezyume previewni yangilash
+        formInputs.forEach(input => {
+            input.addEventListener('input', updateResumePreview);
+            input.addEventListener('change', updateResumePreview); // radio/select uchun ham
+        });
+
+        // Rasmni yuklash tugmasi
+        photoInput.addEventListener('change', updateResumePreview);
+
+        // "Rezyume yaratish (PDF)" tugmasi
+        generatePdfBtn.addEventListener('click', generatePdf);
+
+        // Sahifa yuklanganda tilni o'rnatish
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLanguage(currentLanguage);
+            checkFormValidity(); // Sahifa yuklanganda formani tekshirish
+        });
+    </script>
+</body>
+</html>
